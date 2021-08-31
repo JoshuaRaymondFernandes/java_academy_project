@@ -16,16 +16,16 @@
 	src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
 	integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
 	crossorigin="anonymous"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 
 <script>
 	function createBatch() {
-		
+
 		var batchName = document.getElementById('batchName').value;
 		var batchSize = document.getElementById('batchSize').value;
-		
-		
+
 		$.ajax({
 			type : 'POST',
 			url : '/training_platform/createBatch',
@@ -39,6 +39,43 @@
 				console.log("Successfully created new batch");
 			}
 		});
+	}
+
+	function onLoad() {
+
+		console.log("this runs");
+
+		$.ajax({
+			type : 'GET',
+			url : '/training_platform/FetchBatches',
+			error : function(request, status, error) {
+				// Gets called when an error occurs with error details in variable response
+				console.log(status);
+			},
+			success : function(response) {
+				// Gets called when the action is successful with server response in variable response
+				console.log(response);
+
+				var returnedData = JSON.parse(response.data);
+				var $tableRef = $('<table class="table table-bordered">')
+
+				$.each(returnedData, function(i, item) {
+					var $tr = $('<tr>').append(
+							$('<td class="text-center">').text(item.ID),
+							$('<td class="text-center">').text(item.batchName),
+							$('<td class="text-center">').text(item.batchSize)
+							); //.appendTo('#records_table');
+							$tableRef.append($tr);
+				});
+				$("#records_table").html($tableRef)
+			}
+		});
+
+		$('#tab').append(
+				$('<tr>').append($('<td>').append("text1")).append(
+						$('<td>').append("text2")).append(
+						$('<td>').append("text3")).append(
+						$('<td>').append("text4")))
 	}
 </script>
 </head>
@@ -63,12 +100,14 @@
 	<h1>Admin JSP</h1>
 	<h2>Welcome ${username}</h2>
 
+
+
 	<!-- Button to add new batch-->
 	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-		data-bs-target="#exampleModal">Add new batch</button>
+		data-bs-target="#createBatch">Add new batch</button>
 
 	<!-- Modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1"
+	<div class="modal fade" id="createBatch" tabindex="-1"
 		aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -91,7 +130,8 @@
 								step="1" data-bind="value:replyNumber" />
 						</div>
 
-						<button type="submit" class="btn btn-primary" onclick="createBatch();">Create Batch</button>
+						<button type="submit" class="btn btn-primary"
+							onclick="createBatch();">Create Batch</button>
 					</form>
 				</div>
 				<div class="modal-footer">
@@ -104,6 +144,51 @@
 			</div>
 		</div>
 	</div>
+
+
+	<!-- Button to view batches-->
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+		data-bs-target="#showBatches" onclick="onLoad();">View batches</button>
+
+
+	<!-- Modal -->
+	<div class="modal fade" id="showBatches" tabindex="-1"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Existing
+						Batches</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<table id="records_table" class="table table-bordered">
+						<thead>
+							<tr>
+								<th scope="col" class="text-center">Batch No</th>
+								<th scope="col" class="text-center">Batch Name</th>
+								<th scope="col" class="text-center">Batch Size</th>
+							</tr>
+						</thead>
+
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary"
+						data-bs-dismiss="modal" data-bs-toggle="modal"
+						data-bs-target="#createBatch">Add New Batch</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Button to add new batch-->
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+		data-bs-target="#addStudents">Add new student</button>
 
 
 	<!-- Modal -->
@@ -119,15 +204,13 @@
 				<div class="modal-body">
 					<form>
 						<div class="mb-3">
-							<label for="studentName" class="form-label">Student Name</label> 
-							<input
-								type="text" class="form-control" id="studentName"
+							<label for="studentName" class="form-label">Student Name</label>
+							<input type="text" class="form-control" id="studentName"
 								aria-describedby="emailHelp">
 							<div id="emailHelp" class="form-text">Eg. Batch 2A</div>
 						</div>
 						<div class="mb-3">
-							<label for="studentID" class="form-label">Student ID</label> 
-							<input
+							<label for="studentID" class="form-label">Student ID</label> <input
 								type="number" class="form-control" id="studentID" min="1"
 								step="1" data-bind="value:replyNumber" />
 						</div>
@@ -144,6 +227,21 @@
 			</div>
 		</div>
 	</div>
+
+	<table id="tab">
+		<tr>
+			<th>Firstname</th>
+			<th>Lastname</th>
+			<th>Age</th>
+			<th>City</th>
+		</tr>
+		<tr>
+			<td>Jill</td>
+			<td>Smith</td>
+			<td>50</td>
+			<td>New York</td>
+		</tr>
+	</table>
 
 	<script
 		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
