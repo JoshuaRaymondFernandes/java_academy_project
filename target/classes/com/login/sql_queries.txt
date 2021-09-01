@@ -43,3 +43,5 @@ INSERT INTO `users` (`username`, `password`, `role`) VALUES
 SELECT username, CAST(AES_DECRYPT(`password`, 'secret') AS CHAR(50)) AS `pwwd` FROM `users` WHERE `role` = 'associate';
 
 select * from batches b inner join associate a on b.id = a.batchNo where b.id = 2;
+
+select studentID, studentName, batchName from associate a inner join batches b on b.id = a.batchNo

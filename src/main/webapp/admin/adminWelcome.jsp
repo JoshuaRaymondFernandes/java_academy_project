@@ -24,7 +24,7 @@
 	function createBatch() {
 
 		var batchName = document.getElementById('batchName').value;
-		var batchSize = document.getElementById('batchSize').value; 
+		var batchSize = document.getElementById('batchSize').value;
 
 		$.ajax({
 			type : 'POST',
@@ -40,7 +40,7 @@
 			}
 		});
 	}
-	
+
 	function createAssociate() {
 
 		var studentID = document.getElementById('studentID').value;
@@ -50,14 +50,18 @@
 		$.ajax({
 			type : 'POST',
 			url : '/training_platform/CreateAssociate',
-			data : 'studentID=' + studentID + '&studentName=' + studentName  + '&batchSelection=' + batchSelection,
+			data : 'studentID=' + studentID + '&studentName=' + studentName
+					+ '&batchSelection=' + batchSelection,
 			error : function(response) {
 				// Gets called when an error occurs with error details in variable response
 				console.log("Error while creating new students");
 			},
 			success : function(response) {
 				// Gets called when the action is successful with server response in variable response
-				console.log("Successfully created new students");
+				console.log("Successfully created new associate");
+				$("#createNewStudentForm")[0].reset();
+				document.getElementById('studentID').value = '';
+				document.getElementById('studentName').value = '';
 			}
 		});
 	}
@@ -71,58 +75,95 @@
 			url : '/training_platform/FetchBatches',
 			error : function(request, status, error) {
 				// Gets called when an error occurs with error details in variable response
-				console.log(status);
+				console.log(error);
 			},
 			success : function(response) {
 				// Gets called when the action is successful with server response in variable response
-				
+
 				updateViewBatches(response.data);
 				updateSelectBatches(response.data);
 			}
 		});
 	}
 	
-	function updateSelectBatches(response){
+	function fetchAssociates() {
+
+		console.log("Fetching Associates from FetchAssociates");
+
+		$.ajax({
+			type : 'GET',
+			url : '/training_platform/FetchAssociates',
+			error : function(request, status, error) {
+				// Gets called when an error occurs with error details in variable response
+				console.log(error);
+			},
+			success : function(response) {
+				// Gets called when the action is successful with server response in variable response
+
+				updateViewAssociates(response.data);
+			}
+		});
+	}
+	
+	function updateViewAssociates(response) {
+
 		var returnedData = JSON.parse(response);
-		
+		var $tableRef = $('<table class="table table-bordered">')
+
+		// Adding the headers
+
+		var $th = $('<tr>').append($('<th class="text-center">').text("Associate ID"),
+				$('<th class="text-center">').text("Name"),
+				$('<th class="text-center">').text("Batch Name"));
+		$tableRef.append($th);
+
+		$.each(returnedData, function(i, item) {
+			var $tr = $('<tr>').append(
+					$('<td class="text-center">').text(item.studentID),
+					$('<td class="text-center">').text(item.studentName),
+					$('<td class="text-center">').text(item.batchName)); //.appendTo('#records_table');
+			$tableRef.append($tr);
+		});
+		$("#associates_table").html($tableRef)
+
+	}
+
+	function updateSelectBatches(response) {
+		var returnedData = JSON.parse(response);
+
 		var $option = $('<select id="batchSelection" class="form-select" aria-label="Default select example">');
-		
-		$.each(returnedData, function (i, item) {
-			$option.append($('<option>', { 
-		        value: item.ID,
-		        text : item.batchName 
-		    }));
+
+		$.each(returnedData, function(i, item) {
+			$option.append($('<option>', {
+				value : item.ID,
+				text : item.batchName
+			}));
 		});
 		$('#batchSelectionSection').html($option)
 	}
-	
+
 	function updateViewBatches(response) {
-		
+
 		var returnedData = JSON.parse(response);
 		var $tableRef = $('<table class="table table-bordered">')
-		
+
 		// Adding the headers
-		
-		var $th = $('<tr>').append(
-				$('<th class="text-center">').text("ID"),
+
+		var $th = $('<tr>').append($('<th class="text-center">').text("ID"),
 				$('<th class="text-center">').text("Batch Name"),
-				$('<th class="text-center">').text("Batch Size")
-				);
+				$('<th class="text-center">').text("Batch Size"));
 		$tableRef.append($th);
-		
+
 		$.each(returnedData, function(i, item) {
 			var $tr = $('<tr>').append(
 					$('<td class="text-center">').text(item.ID),
 					$('<td class="text-center">').text(item.batchName),
-					$('<td class="text-center">').text(item.batchSize)
-					); //.appendTo('#records_table');
-					$tableRef.append($tr);
+					$('<td class="text-center">').text(item.batchSize)); //.appendTo('#records_table');
+			$tableRef.append($tr);
 		});
 		$("#records_table").html($tableRef)
-		
+
 	}
-	
-	
 </script>
 </head>
 <body>
@@ -185,7 +226,7 @@
 						data-bs-dismiss="modal">Close</button>
 					<button type="button" class="btn btn-primary"
 						data-bs-dismiss="modal" data-bs-toggle="modal"
-						data-bs-target="#addAssociate">Add New Student</button>
+						data-bs-target="#addAssociate">Add New Associate</button>
 				</div>
 			</div>
 		</div>
@@ -194,7 +235,8 @@
 
 	<!-- Button to view batches-->
 	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-		data-bs-target="#showBatches" onclick="fetchBatches();">View batches</button>
+		data-bs-target="#showBatches" onclick="fetchBatches();">View
+		batches</button>
 
 
 	<!-- Modal -->
@@ -234,7 +276,8 @@
 
 	<!-- Button to add new Associate-->
 	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-		data-bs-target="#addAssociate" onclick="fetchBatches();">Add new Associate</button>
+		data-bs-target="#addAssociate" onclick="fetchBatches();">Add
+		new Associate</button>
 
 
 	<!-- Modal -->
@@ -248,7 +291,7 @@
 						aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<form>
+					<form name="createNewStudentForm" onsubmit="return false">
 						<div class="mb-3">
 							<label for="studentName" class="form-label">Student Name</label>
 							<input type="text" class="form-control" id="studentName"
@@ -261,22 +304,67 @@
 								step="1" data-bind="value:replyNumber" />
 						</div>
 						<div class="mb-3">
-							<label for="batchSelectionSection" class="form-label">Select Batch :</label> 
-							<div id = "batchSelectionSection">
+							<label for="batchSelectionSection" class="form-label">Select
+								Batch :</label>
+							<div id="batchSelectionSection">
 								<select class="form-select" aria-label="Default select example">
-									<option value = "NA">Not Assigned</option>
-	
+									<option value="NA">Not Assigned</option>
+
 								</select>
 							</div>
 						</div>
 
-						<button type="submit" class="btn btn-primary" onclick="createAssociate();">Create New Associate</button>
+						<button type="submit" class="btn btn-primary"
+							onclick="createAssociate();">Create New Associate</button>
 					</form>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary"
 						data-bs-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
+					<button type="button" class="btn btn-primary"
+						data-bs-dismiss="modal" data-bs-toggle="modal"
+						data-bs-target="#addAssociate">Add Another New Associate</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Button to view batches-->
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+		data-bs-target="#showAssociates" onclick="fetchAssociates();">View
+		Associates</button>
+
+
+	<!-- Modal -->
+	<div class="modal fade" id="showAssociates" tabindex="-1"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Existing
+						Associates</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<table id="associates_table" class="table table-bordered">
+						<thead>
+							<tr>
+								<th scope="col" class="text-center">Associate ID</th>
+								<th scope="col" class="text-center">Name</th>
+								<th scope="col" class="text-center">Batch Name</th>
+							</tr>
+						</thead>
+
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary"
+						data-bs-dismiss="modal" data-bs-toggle="modal"
+						data-bs-target="#createBatch">Add New Batch</button>
 				</div>
 			</div>
 		</div>

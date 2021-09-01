@@ -26,7 +26,7 @@ public class CreateAssociateDao extends HttpServlet {
 		String url = "jdbc:mysql://localhost:3306/academy";
 		String user = "root";
 		String dbPassword = "pass111";
-		String query = "INSERT INTO `associate` (`studentID`, `studentName`, `batchSelection`) VALUES (?, ?, ?)";
+		String query = "INSERT INTO `associate` (`studentID`, `studentName`, `batchNo`) VALUES (?, ?, ?)";
 		
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
