@@ -18,7 +18,18 @@ CREATE TABLE `batches` (
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		
 		
+CREATE TABLE `associate` (
+		  `studentID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+		  `studentName` varchar(255) DEFAULT NULL,
+		  `batchNo` int(10) DEFAULT NULL,
+		  PRIMARY KEY (`studentID`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		
+		
 INSERT INTO `batches` (`batchName`, `batchSize`) VALUES ('Batch 2A', 22);
+
+INSERT INTO `associate` (`studentID`, `studentName`, `batchNo`) VALUES ('12', 'Joshua', '1');
+INSERT INTO `associate` (`studentID`, `studentName`, `batchNo`) VALUES ('13', 'Aditya', '2');
 
 INSERT INTO `users` (`username`, `password`, `role`) VALUES 
 ('a1', AES_ENCRYPT('123', 'secret'), 'admin'),
@@ -30,3 +41,5 @@ INSERT INTO `users` (`username`, `password`, `role`) VALUES
 
 
 SELECT username, CAST(AES_DECRYPT(`password`, 'secret') AS CHAR(50)) AS `pwwd` FROM `users` WHERE `role` = 'associate';
+
+select * from batches b inner join associate a on b.id = a.batchNo where b.id = 2;
