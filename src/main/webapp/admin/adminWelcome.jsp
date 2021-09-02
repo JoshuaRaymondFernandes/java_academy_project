@@ -40,6 +40,25 @@
 			}
 		});
 	}
+	
+	function createSubject() {
+		var subjectName = document.getElementById('subjectName').value;
+		var hoursLength = document.getElementById('hoursLength').value;
+
+		$.ajax({
+			type : 'POST',
+			url : '/training_platform/CreateSubject',
+			data : 'subjectName=' + subjectName + '&hoursLength=' + hoursLength,
+			error : function(response) {
+				// Gets called when an error occurs with error details in variable response
+				console.log("Error while calling CreateSubject");
+			},
+			success : function(response) {
+				// Gets called when the action is successful with server response in variable response
+				console.log("Successfully created new subject");
+			}
+		});
+	}
 
 	function createAssociate() {
 
@@ -442,7 +461,49 @@
 			</div>
 		</div>
 	</div>
+	
+	<!-- Button to add new batch-->
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+		data-bs-target="#createSubject">Add new Subject</button>
 
+	<!-- Modal -->
+	<div class="modal fade" id="createSubject" tabindex="-1"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Add New Subject</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form name="createNewSubject" onsubmit="return false">
+						<div class="mb-3">
+							<label for="subjectName" class="form-label">Subject Name :</label> <input
+								type="text" class="form-control" id="subjectName"
+								aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">Eg. SQL</div>
+						</div>
+						<div class="mb-3">
+							<label for="hoursLength" class="form-label">Number of Hours :</label> <input
+								type="number" class="form-control" id="hoursLength" min="1"
+								step="1" data-bind="value:replyNumber" />
+						</div>
+
+						<button type="submit" class="btn btn-primary"
+							onclick="createSubject();">Create Subject</button>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary"
+						data-bs-dismiss="modal" data-bs-toggle="modal"
+						data-bs-target="#createSubject">Add Another Subject</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<script
 		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"

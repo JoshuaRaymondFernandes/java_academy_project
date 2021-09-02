@@ -25,7 +25,25 @@ CREATE TABLE `associate` (
 		  PRIMARY KEY (`studentID`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		
+CREATE TABLE `subjects` (
+		  `subjectId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+		  `subjectName` varchar(255) DEFAULT NULL,
+		  `Hours` int(10) DEFAULT NULL,
+		  PRIMARY KEY (`subjectId`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		
+CREATE TABLE `Marks` (
+		  `subjectId` int(10) NOT NULL,
+		  `BatchId`int(10) NOT NULL,
+		  `studentId` int(10) NOT NULL,
+		  `TestId` int(10) NOT NULL,
+		  `TestName` varchar(255) DEFAULT NULL,
+		  `Marks` int(10) DEFAULT NULL,
+		  PRIMARY KEY (`subjectId`, `BatchId`, `studentId`, `TestId`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		
+INSERT INTO `subjects` (`subjectName`, `Hours`) VALUES ('HTML', 10);
+
 INSERT INTO `batches` (`batchName`, `batchSize`) VALUES ('Batch 2A', 22);
 
 INSERT INTO `associate` (`studentID`, `studentName`, `batchNo`) VALUES ('12', 'Joshua', '1');
