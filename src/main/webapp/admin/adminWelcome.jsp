@@ -20,7 +20,7 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 
-<script>
+<script  type= "text/javascript">
 	function createBatch() {
 
 		var batchName = document.getElementById('batchName').value;
@@ -86,6 +86,28 @@
 		});
 	}
 	
+	function deleteBatch() {
+	
+		console.log("Delete Batch from FetchBatches");
+		
+		var batchId = document.getElementById('batchDeletion').value;
+
+		$.ajax({
+			type : 'POST',
+			url : '/training_platform/DeleteBatch',
+			data : 'batchId=' + batchId,
+			error : function(request, status, error) {
+				// Gets called when an error occurs with error details in variable response
+				console.log(error);
+			},
+			success : function(response) {
+				// Gets called when the action is successful with server response in variable response
+
+				console.log("Successfully deleted batch and its associates");
+			}
+		});
+	}
+	
 	function fetchAssociates() {
 
 		console.log("Fetching Associates from FetchAssociates");
@@ -131,15 +153,21 @@
 	function updateSelectBatches(response) {
 		var returnedData = JSON.parse(response);
 
-		var $option = $('<select id="batchSelection" class="form-select" aria-label="Default select example">');
+		var $optionSelection = $('<select id="batchSelection" class="form-select" aria-label="Default select example">');
+		var $optionDeletion = $('<select id="batchDeletion" class="form-select" aria-label="Default select example">');
 
 		$.each(returnedData, function(i, item) {
-			$option.append($('<option>', {
+			$optionSelection.append($('<option>', {
+				value : item.ID,
+				text : item.batchName
+			}));
+			$optionDeletion.append($('<option>', {
 				value : item.ID,
 				text : item.batchName
 			}));
 		});
-		$('#batchSelectionSection').html($option)
+		$('#batchSelectionSection').html($optionSelection)
+		$("#batchDeletionSection").html($optionDeletion)
 	}
 
 	function updateViewBatches(response) {
@@ -165,6 +193,7 @@
 
 	}
 </script>
+
 </head>
 <body>
 
@@ -358,6 +387,50 @@
 						</thead>
 
 					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary"
+						data-bs-dismiss="modal" data-bs-toggle="modal"
+						data-bs-target="#createBatch">Add New Batch</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Button to view batches-->
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+		data-bs-target="#deleteBatch" onclick="fetchBatches();">Delete Batch</button>
+
+
+	<!-- Modal -->
+	<div class="modal fade" id="deleteBatch" tabindex="-1"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Delete Batch</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form name="deleteBatchForm" onsubmit="return false">
+						
+						<div class="mb-3">
+							<label for="batchSelectionSection" class="form-label">
+							Select which Batch you would like to delete :</label>
+							<div id="batchDeletionSection">
+								<select class="form-select" aria-label="Default select example">
+									<option value="NA">Not Assigned</option>
+								</select>
+							</div>
+						</div>
+
+						<button type="submit" class="btn btn-danger"
+							onclick="deleteBatch();">Delete Batch</button>
+					</form>
+					
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary"

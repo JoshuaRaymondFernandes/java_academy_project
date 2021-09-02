@@ -45,3 +45,17 @@ SELECT username, CAST(AES_DECRYPT(`password`, 'secret') AS CHAR(50)) AS `pwwd` F
 select * from batches b inner join associate a on b.id = a.batchNo where b.id = 2;
 
 select studentID, studentName, batchName from associate a inner join batches b on b.id = a.batchNo
+
+select * from associate a inner join batches b on b.id = a.batchNo
+
+select id, batchName, Count(*) as batchSize from associate a inner join batches b on b.id = a.batchNo group by id, batchName
+
+
+
+DELIMITER &&  
+CREATE PROCEDURE deleteBatch (IN batchNumber INT)  
+BEGIN  
+    DELETE FROM batches where id = batchNumber;  
+    DELETE FROM associate where batchNo = batchNumber; 
+END &&  
+DELIMITER ; 

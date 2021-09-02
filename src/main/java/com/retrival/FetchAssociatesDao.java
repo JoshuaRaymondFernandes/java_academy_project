@@ -63,7 +63,7 @@ public class FetchAssociatesDao extends HttpServlet {
 			
 			String data = new Gson().toJson(list);
 			
-			System.out.println(data);
+//			System.out.println(data);
 			
 			json.put("status", "successful");
 			json.put("data", data);

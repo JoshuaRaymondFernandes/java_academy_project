@@ -34,7 +34,7 @@ public class FetchBatchesDao extends HttpServlet {
 		String url = "jdbc:mysql://localhost:3306/academy";
 		String user = "root";
 		String dbPassword = "pass111";
-		String query = "select * from batches";
+		String query = "select id, batchName, Count(studentID) as batchSize from associate a right join batches b on b.id = a.batchNo group by id, batchName;";
 
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
