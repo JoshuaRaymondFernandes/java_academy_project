@@ -1,0 +1,121 @@
+
+CREATE TABLE `users` (
+		  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+		  `username` varchar(255) DEFAULT NULL,
+		  `role` varchar(255) DEFAULT NULL,
+		  `password` blob,
+		  PRIMARY KEY (`id`),
+		  UNIQUE KEY `username` (`username`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		
+CREATE TABLE `students` (
+		  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+		  `studentName` varchar(255) DEFAULT NULL,
+		  `subject1` int(10) DEFAULT NULL,
+		  `subject2` int(10) DEFAULT NULL,
+		  `subject3` int(10) DEFAULT NULL,
+		  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `students` (`studentName`, `subject1`, `subject2`, `subject3`) VALUES ('Joshua', 10, 20, 30);
+
+select
+s.studentName,
+(s.subject1+s.subject2+s.subject3)/3 as `Average`
+from students s
+where
+(s.subject1+s.subject2+s.subject3)/3 > 17
+ order by `Average`
+ desc limit 5 ;
+
+Select 
+id, 
+studentName, 
+subject1, 
+subject2, 
+subject3, 
+(s.subject1+s.subject2+s.subject3)/3 as `Average`,
+CASE
+    WHEN (s.subject1+s.subject2+s.subject3)/3 > 30 THEN "Pass"
+    ELSE "Fail"
+END as `Result`
+from students s;
+
+Select id, studentName, subject1, subject2, subject3, (s.subject1+s.subject2+s.subject3)/3 as `Average`, CASE WHEN (s.subject1+s.subject2+s.subject3)/3 > 30 THEN "Pass" ELSE "Fail" END as `Result` from students s;
+
+select 
+AVG((s.subject1+s.subject2+s.subject3)/3) as `Average`
+from students s
+		
+update studentname from students where id=
+
+
+
+CREATE TABLE `batches` (
+		  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+		  `batchName` varchar(255) DEFAULT NULL,
+		  `batchSize` int(10) DEFAULT NULL,
+		  PRIMARY KEY (`id`),
+		  UNIQUE KEY `batchName` (`batchName`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		
+		
+CREATE TABLE `associate` (
+		  `studentID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+		  `studentName` varchar(255) DEFAULT NULL,
+		  `batchNo` int(10) DEFAULT NULL,
+		  PRIMARY KEY (`studentID`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		
+CREATE TABLE `subjects` (
+		  `subjectId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+		  `subjectName` varchar(255) DEFAULT NULL,
+		  `Hours` int(10) DEFAULT NULL,
+		  PRIMARY KEY (`subjectId`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		
+CREATE TABLE `Marks` (
+		  `subjectId` int(10) NOT NULL,
+		  `BatchId`int(10) NOT NULL,
+		  `studentId` int(10) NOT NULL,
+		  `TestId` int(10) NOT NULL,
+		  `TestName` varchar(255) DEFAULT NULL,
+		  `Marks` int(10) DEFAULT NULL,
+		  PRIMARY KEY (`subjectId`, `BatchId`, `studentId`, `TestId`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		
+INSERT INTO `subjects` (`subjectName`, `Hours`) VALUES ('HTML', 10);
+
+INSERT INTO `batches` (`batchName`, `batchSize`) VALUES ('Batch 2A', 22);
+
+INSERT INTO `associate` (`studentID`, `studentName`, `batchNo`) VALUES ('12', 'Joshua', '1');
+INSERT INTO `associate` (`studentID`, `studentName`, `batchNo`) VALUES ('13', 'Aditya', '2');
+
+INSERT INTO `users` (`username`, `password`, `role`) VALUES 
+('a1', AES_ENCRYPT('123', 'secret'), 'admin'),
+('f1', AES_ENCRYPT('456', 'secret'), 'faculty'),
+('f2', AES_ENCRYPT('456', 'secret'), 'faculty'),
+('s1', AES_ENCRYPT('789', 'secret'), 'associate'),
+('s2', AES_ENCRYPT('789', 'secret'), 'associate'),
+('s3', AES_ENCRYPT('789', 'secret'), 'associate');
+
+
+SELECT username, CAST(AES_DECRYPT(`password`, 'secret') AS CHAR(50)) AS `pwwd` FROM `users` WHERE `role` = 'associate';
+
+select * from batches b inner join associate a on b.id = a.batchNo where b.id = 2;
+
+select studentID, studentName, batchName from associate a inner join batches b on b.id = a.batchNo
+
+select * from associate a inner join batches b on b.id = a.batchNo
+
+select id, batchName, Count(*) as batchSize from associate a inner join batches b on b.id = a.batchNo group by id, batchName
+
+
+
+DELIMITER &&  
+CREATE PROCEDURE deleteBatch (IN batchNumber INT)  
+BEGIN  
+    DELETE FROM batches where id = batchNumber;  
+    DELETE FROM associate where batchNo = batchNumber; 
+END &&  
+DELIMITER ; 
