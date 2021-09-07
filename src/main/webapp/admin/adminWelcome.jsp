@@ -20,198 +20,7 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 
-<script  type= "text/javascript">
-	function createBatch() {
-
-		var batchName = document.getElementById('batchName').value;
-		var batchSize = document.getElementById('batchSize').value;
-
-		$.ajax({
-			type : 'POST',
-			url : '/training_platform/createBatch',
-			data : 'batchName=' + batchName + '&batchSize=' + batchSize,
-			error : function(response) {
-				// Gets called when an error occurs with error details in variable response
-				console.log("Error while calling createBatch");
-			},
-			success : function(response) {
-				// Gets called when the action is successful with server response in variable response
-				console.log("Successfully created new batch");
-			}
-		});
-	}
-	
-	function createSubject() {
-		var subjectName = document.getElementById('subjectName').value;
-		var hoursLength = document.getElementById('hoursLength').value;
-
-		$.ajax({
-			type : 'POST',
-			url : '/training_platform/CreateSubject',
-			data : 'subjectName=' + subjectName + '&hoursLength=' + hoursLength,
-			error : function(response) {
-				// Gets called when an error occurs with error details in variable response
-				console.log("Error while calling CreateSubject");
-			},
-			success : function(response) {
-				// Gets called when the action is successful with server response in variable response
-				console.log("Successfully created new subject");
-			}
-		});
-	}
-
-	function createAssociate() {
-
-		var studentID = document.getElementById('studentID').value;
-		var studentName = document.getElementById('studentName').value;
-		var batchSelection = document.getElementById('batchSelection').value;
-
-		$.ajax({
-			type : 'POST',
-			url : '/training_platform/CreateAssociate',
-			data : 'studentID=' + studentID + '&studentName=' + studentName
-					+ '&batchSelection=' + batchSelection,
-			error : function(response) {
-				// Gets called when an error occurs with error details in variable response
-				console.log("Error while creating new students");
-			},
-			success : function(response) {
-				// Gets called when the action is successful with server response in variable response
-				console.log("Successfully created new associate");
-				$("#createNewStudentForm")[0].reset();
-				document.getElementById('studentID').value = '';
-				document.getElementById('studentName').value = '';
-			}
-		});
-	}
-
-	function fetchBatches() {
-
-		console.log("Fetching Batches from FetchBatches");
-
-		$.ajax({
-			type : 'GET',
-			url : '/training_platform/FetchBatches',
-			error : function(request, status, error) {
-				// Gets called when an error occurs with error details in variable response
-				console.log(error);
-			},
-			success : function(response) {
-				// Gets called when the action is successful with server response in variable response
-
-				updateViewBatches(response.data);
-				updateSelectBatches(response.data);
-			}
-		});
-	}
-	
-	function deleteBatch() {
-	
-		console.log("Delete Batch from FetchBatches");
-		
-		var batchId = document.getElementById('batchDeletion').value;
-
-		$.ajax({
-			type : 'POST',
-			url : '/training_platform/DeleteBatch',
-			data : 'batchId=' + batchId,
-			error : function(request, status, error) {
-				// Gets called when an error occurs with error details in variable response
-				console.log(error);
-			},
-			success : function(response) {
-				// Gets called when the action is successful with server response in variable response
-
-				console.log("Successfully deleted batch and its associates");
-			}
-		});
-	}
-	
-	function fetchAssociates() {
-
-		console.log("Fetching Associates from FetchAssociates");
-
-		$.ajax({
-			type : 'GET',
-			url : '/training_platform/FetchAssociates',
-			error : function(request, status, error) {
-				// Gets called when an error occurs with error details in variable response
-				console.log(error);
-			},
-			success : function(response) {
-				// Gets called when the action is successful with server response in variable response
-
-				updateViewAssociates(response.data);
-			}
-		});
-	}
-	
-	function updateViewAssociates(response) {
-
-		var returnedData = JSON.parse(response);
-		var $tableRef = $('<table class="table table-bordered">')
-
-		// Adding the headers
-
-		var $th = $('<tr>').append($('<th class="text-center">').text("Associate ID"),
-				$('<th class="text-center">').text("Name"),
-				$('<th class="text-center">').text("Batch Name"));
-		$tableRef.append($th);
-
-		$.each(returnedData, function(i, item) {
-			var $tr = $('<tr>').append(
-					$('<td class="text-center">').text(item.studentID),
-					$('<td class="text-center">').text(item.studentName),
-					$('<td class="text-center">').text(item.batchName)); //.appendTo('#records_table');
-			$tableRef.append($tr);
-		});
-		$("#associates_table").html($tableRef)
-
-	}
-
-	function updateSelectBatches(response) {
-		var returnedData = JSON.parse(response);
-
-		var $optionSelection = $('<select id="batchSelection" class="form-select" aria-label="Default select example">');
-		var $optionDeletion = $('<select id="batchDeletion" class="form-select" aria-label="Default select example">');
-
-		$.each(returnedData, function(i, item) {
-			$optionSelection.append($('<option>', {
-				value : item.ID,
-				text : item.batchName
-			}));
-			$optionDeletion.append($('<option>', {
-				value : item.ID,
-				text : item.batchName
-			}));
-		});
-		$('#batchSelectionSection').html($optionSelection)
-		$("#batchDeletionSection").html($optionDeletion)
-	}
-
-	function updateViewBatches(response) {
-
-		var returnedData = JSON.parse(response);
-		var $tableRef = $('<table class="table table-bordered">')
-
-		// Adding the headers
-
-		var $th = $('<tr>').append($('<th class="text-center">').text("ID"),
-				$('<th class="text-center">').text("Batch Name"),
-				$('<th class="text-center">').text("Batch Size"));
-		$tableRef.append($th);
-
-		$.each(returnedData, function(i, item) {
-			var $tr = $('<tr>').append(
-					$('<td class="text-center">').text(item.ID),
-					$('<td class="text-center">').text(item.batchName),
-					$('<td class="text-center">').text(item.batchSize)); //.appendTo('#records_table');
-			$tableRef.append($tr);
-		});
-		$("#records_table").html($tableRef)
-
-	}
-</script>
+<script type="text/javascript" src="adminWelcome.js"></script>
 
 </head>
 <body>
@@ -417,10 +226,11 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- Button to view batches-->
 	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-		data-bs-target="#deleteBatch" onclick="fetchBatches();">Delete Batch</button>
+		data-bs-target="#deleteBatch" onclick="fetchBatches();">Delete
+		Batch</button>
 
 
 	<!-- Modal -->
@@ -435,10 +245,10 @@
 				</div>
 				<div class="modal-body">
 					<form name="deleteBatchForm" onsubmit="return false">
-						
+
 						<div class="mb-3">
 							<label for="batchSelectionSection" class="form-label">
-							Select which Batch you would like to delete :</label>
+								Select which Batch you would like to delete :</label>
 							<div id="batchDeletionSection">
 								<select class="form-select" aria-label="Default select example">
 									<option value="NA">Not Assigned</option>
@@ -449,7 +259,7 @@
 						<button type="submit" class="btn btn-danger"
 							onclick="deleteBatch();">Delete Batch</button>
 					</form>
-					
+
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary"
@@ -461,7 +271,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- Button to add new batch-->
 	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
 		data-bs-target="#createSubject">Add new Subject</button>
@@ -479,15 +289,15 @@
 				<div class="modal-body">
 					<form name="createNewSubject" onsubmit="return false">
 						<div class="mb-3">
-							<label for="subjectName" class="form-label">Subject Name :</label> <input
-								type="text" class="form-control" id="subjectName"
+							<label for="subjectName" class="form-label">Subject Name
+								:</label> <input type="text" class="form-control" id="subjectName"
 								aria-describedby="emailHelp">
 							<div id="emailHelp" class="form-text">Eg. SQL</div>
 						</div>
 						<div class="mb-3">
-							<label for="hoursLength" class="form-label">Number of Hours :</label> <input
-								type="number" class="form-control" id="hoursLength" min="1"
-								step="1" data-bind="value:replyNumber" />
+							<label for="hoursLength" class="form-label">Number of
+								Hours :</label> <input type="number" class="form-control"
+								id="hoursLength" min="1" step="1" data-bind="value:replyNumber" />
 						</div>
 
 						<button type="submit" class="btn btn-primary"
@@ -500,6 +310,61 @@
 					<button type="button" class="btn btn-primary"
 						data-bs-dismiss="modal" data-bs-toggle="modal"
 						data-bs-target="#createSubject">Add Another Subject</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Button to add new test marks-->
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+		data-bs-target="#createTest" onclick="fetchBatches();fetchSubjects();">Add New Test Marks</button>
+
+	<!-- Modal -->
+	<div class="modal fade" id="createTest" tabindex="-1"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Test Marks</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form name="createNewSubject" onsubmit="return false">
+						<div class="mb-3" >
+						<label for="batchSelectionTestSection" class="form-label">Batch Name : </label>
+							<div id="batchSelectionTestSection">
+								<select class="form-select" aria-label="Default select example">
+									<option value="NA">Not Assigned</option>
+								</select>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label for="subjectNameTest" class="form-label">Subject Name : </label> 
+							<div id="subjectNameTest">
+								<select class="form-select" aria-label="Default select example">
+									<option value="NA">Not Assigned</option>
+								</select>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label for="testNumber" class="form-label">Test Number :</label>
+							<input type="number" class="form-control" id="testNumber" min="1"
+								step="1" data-bind="value:replyNumber" />
+						</div>
+						<div class="mb-3">
+							<label for="testName" class="form-label">Test Name : :</label> <input
+								type="text" class="form-control" id="testName">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-info" data-bs-dismiss="modal"
+						data-bs-toggle="modal" data-bs-target="#newAssociateMarks"
+						onclick="addNewTest();">Next</button>
 				</div>
 			</div>
 		</div>

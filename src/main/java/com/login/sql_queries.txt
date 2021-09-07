@@ -8,7 +8,49 @@ CREATE TABLE `users` (
 		  UNIQUE KEY `username` (`username`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		
+CREATE TABLE `students` (
+		  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+		  `studentName` varchar(255) DEFAULT NULL,
+		  `subject1` int(10) DEFAULT NULL,
+		  `subject2` int(10) DEFAULT NULL,
+		  `subject3` int(10) DEFAULT NULL,
+		  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `students` (`studentName`, `subject1`, `subject2`, `subject3`) VALUES ('Joshua', 10, 20, 30);
+
+select
+s.studentName,
+(s.subject1+s.subject2+s.subject3)/3 as `Average`
+from students s
+where
+(s.subject1+s.subject2+s.subject3)/3 > 17
+ order by `Average`
+ desc limit 5 ;
+
+Select 
+id, 
+studentName, 
+subject1, 
+subject2, 
+subject3, 
+(s.subject1+s.subject2+s.subject3)/3 as `Average`,
+CASE
+    WHEN (s.subject1+s.subject2+s.subject3)/3 > 30 THEN "Pass"
+    ELSE "Fail"
+END as `Result`
+from students s;
+
+Select id, studentName, subject1, subject2, subject3, (s.subject1+s.subject2+s.subject3)/3 as `Average`, CASE WHEN (s.subject1+s.subject2+s.subject3)/3 > 30 THEN "Pass" ELSE "Fail" END as `Result` from students s;
+
+select 
+AVG((s.subject1+s.subject2+s.subject3)/3) as `Average`
+from students s
 		
+update studentname from students where id=
+
+
+
 CREATE TABLE `batches` (
 		  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 		  `batchName` varchar(255) DEFAULT NULL,
